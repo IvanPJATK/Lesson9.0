@@ -32,5 +32,31 @@ namespace WebApplication1.Controllers
                 }).ToListAsync();
             return Ok(courses);
         }
+        [HttpGet("{idCourse}/assignments")]
+        public async Task<IActionResult> GetCourseAssignments(int idCourse, [FromQuery] bool published_only = true)
+        {
+            var courseExists = await _context.Courses.AnyAsync(c => c.CourseId == idCourse);
+            if (!courseExists)
+            {
+                return NotFound($"Course with ID {idCourse} does not exist");
+            }
+            var query = _context.Assignments.Where(a => a.CourseId == idCourse);
+            if(published_only)
+            {
+                query = query.Where(a => a.IsPublished);
+            }
+            var assignments = await query
+                .Select(a => new AssignmentDto
+                    { 
+                        AssignmentId = a.AssignmentId,
+                        Title = a.Title,
+                        Due_date = a.DueDate,
+                        Max_points = a.MaxPoints,
+                        Published_status = a.IsPublished ? "Published" : "Draft",
+                        SubmissionCount = a.Submissions.Count,
+                    }
+                ).ToListAsync();
+            return Ok(assignments);
+        }
     }
 }
