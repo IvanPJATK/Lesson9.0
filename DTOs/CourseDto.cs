@@ -6,6 +6,6 @@
         public string Code { get; set; } = null!;
         public string Name { get; set; } = null!;
         public int Credits { get; set; }
-        public List<AssignmentDto> Assignments = new List<AssignmentDto>();
+        public List<AssignmentDto> Assignments { get; set;  } = new List<AssignmentDto>();
     }
 }
