@@ -71,5 +71,41 @@ namespace WebApplication1.Services
 
             return (true, String.Empty, resultDto);
         }
+        public async Task<(bool Sucess, string ErrorMessage)> GradeSubmissionAsync(int idSubmission, GradeSubmissionDto dto)
+        {
+            var submission = await _context.Submissions
+                .Include(x => x.Assignment)
+                .FirstOrDefaultAsync(s => s.SubmissionId == idSubmission);
+            if (submission == null)
+            {
+                return (false, "Submission not found");
+            }
+            if (dto.Score < 0)
+            {
+                return (false, "Score cannot be lower than 0");
+            }
+            submission.Score = dto.Score;
+            submission.Feedback = dto.Feedback;
+            submission.Status = "Graded";
+
+            await _context.SaveChangesAsync();
+            return (true, string.Empty);
+        }
+
+        public async Task<(int StatusCode, string ErorMessage)> DeleteSubmissionAsync(int idSubmission)
+        {
+            var submission = await _context.Submissions.FindAsync(idSubmission);
+            if (submission == null)
+            {
+                return (404, "Submission not found.");
+            }
+            if (submission.Status == "Graded")
+            {
+                return (400, "Graded submission cannot be deleted");
+            }
+            _context.Submissions.Remove(submission);
+            await _context.SaveChangesAsync();
+            return (204, string.Empty);
+        }
     }
 }
