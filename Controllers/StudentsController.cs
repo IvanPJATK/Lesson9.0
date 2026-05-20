@@ -23,7 +23,7 @@ namespace WebApplication1.Controllers
                 {
                     Id = s.StudentId,
                     IndexNumber = s.IndexNumber,
-                    FullName = s.FirstName + " " + s.LastName,
+                    FullName = s.FullName,
                     IsActive = s.IsActive,
 
                     Enrollments = s.Enrollments.Select(e => new StudentDashboardEnrollmentDto

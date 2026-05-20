@@ -44,7 +44,7 @@ namespace WebApplication1.Services
             {
                 return (false, "Student must be enrolled in this corse", null);
             }
-            string chosen_status = DateTime.UtcNow > assignment.DueDate ? "Laye" : "Submitted";
+            string chosen_status = assignment.isOverdue(DateTime.UtcNow) ? "Late" : "Submitted";
             var newSubmission = new Submission
             {
                 AssignmentId = dto.AssignmentId,
